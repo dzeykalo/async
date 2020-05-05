@@ -1,5 +1,11 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(async VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.5)
+
+set( PRO_PATCH $ENV{TRAVIS_BUILD_NUMBER})
+if (NOT "${PRO_PATCH}")
+  set(PRO_PATCH "1")
+endif (NOT "${PRO_PATCH}")
+
+project(async VERSION 0.0.${PRO_PATCH})
 
 include_directories("src/" "include/")
 
@@ -8,16 +14,7 @@ find_package(Threads REQUIRED)
 set(SOURCES src/async.cpp src/owner.cpp src/observer.cpp src/output_observer.cpp src/record_observer.cpp)
 set(HEADERS include/async.h include/owner.h include/observer.h include/output_observer.h include/record_observer.h)
 
-add_executable(test_async main.cpp)
-
 add_library(async ${SOURCES} ${HEADERS})
-
-set_target_properties(
-  test_async PROPERTIES
-  CXX_STANDARD 14
-  CXX_STANDARD_REQUIRED ON
-  COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra;"
-)
 
 set_target_properties(
   async PROPERTIES
@@ -26,11 +23,12 @@ set_target_properties(
   COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra;"
 )
 
-target_link_libraries(test_async
-        async
-        Threads::Threads
-        )
+install(TARGETS async DESTINATION lib)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_CONTACT mr.alligator@yandex.ru)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 include(CPack)

@@ -45,15 +45,9 @@ void owner::receive(const char *data, std::size_t size)
 
         default:
             if (data[i]  == '{')
-            {
                 ++bkt;
-                v.push_back(str);
-                str.clear();
-            }
             else if (data[i]  == '}')
             {
-                v.push_back(str);
-                str.clear();
                 if (--bkt < 1 )
                 {
                     owner::ob->show(v, sys_time);
